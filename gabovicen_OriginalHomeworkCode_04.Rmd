@@ -1,0 +1,73 @@
+---
+title: "gabovicen_OriginalHomeworkCode_04"
+author: "Gabriel Vicencio"
+date: "11/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(curl)
+library(tidyverse)
+library(boot)
+```
+
+
+```{r}
+f <- curl("https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN588_Fall21/KamilarAndCooperData.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+```
+```{r}
+names(d)
+```
+
+
+
+## [1] Using the “KamilarAndCooperData.csv” dataset, run a linear regression looking at log(HomeRange_km2) in relation to log(Body_mass_female_mean) and report your β coeffiecients (slope and intercept).
+
+```{r}
+x <- log(d$Body_mass_female_mean)
+y <- log(d$HomeRange_km2)
+
+lr <- lm (y ~ x, data = d)
+summary(lr)
+```
+
+```{r}
+r <- coef(summary(lr))
+r <- data.frame(unlist(r))
+r
+
+beta0 <- r$Estimate[1]
+beta0
+
+beta1 <- r$Estimate[2]
+beta1
+
+```
+
+## [2] Then, use bootstrapping to sample from your data 1000 times with replacement, each time fitting the same model and calculating the same coefficients. This generates a sampling distribution for each β coefficient.
+
+
+
+
+```{r}
+bootobject <- boot(data = d, statistic = k1, R = 1000, formula = log(HomeRange_km2) ~ log(Body_mass_female_mean))
+bootobject
+```
+
+https://www.statmethods.net/advstats/bootstrapping.html
+
+```{r}
+plot(bootobject, index = 1)
+plot(bootobject, index = 2)
+```
+
+
+
