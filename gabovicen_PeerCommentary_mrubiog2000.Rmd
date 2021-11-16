@@ -1,0 +1,111 @@
+---
+title: "gabovicen_PeerCommentary_mrubiog2000"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(curl)
+library(tidyverse)
+library(boot)
+```
+
+
+```{r}
+f <- curl("https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN588_Fall21/KamilarAndCooperData.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+```
+```{r}
+names(d)
+```
+
+
+
+## [1] Using the “KamilarAndCooperData.csv” dataset, run a linear regression looking at log(HomeRange_km2) in relation to log(Body_mass_female_mean) and report your β coeffiecients (slope and intercept).
+
+```{r}
+x <- log(d$Body_mass_female_mean)
+y <- log(d$HomeRange_km2)
+
+lr <- lm (y ~ x, data = d)
+summary(lr)
+```
+
+```{r}
+r <- coef(summary(lr))
+r <- data.frame(unlist(r))
+r
+
+beta0 <- r$Estimate[1]
+beta0
+
+beta1 <- r$Estimate[2]
+beta1
+
+```
+
+```{r}
+##Miguel: Nice job! I did it the same way.
+```
+
+
+## [2] Then, use bootstrapping to sample from your data 1000 times with replacement, each time fitting the same model and calculating the same coefficients. This generates a sampling distribution for each β coefficient.
+
+
+
+
+```{r}
+bootobject <- boot(data = d, statistic = k1, R = 1000, formula = log(HomeRange_km2) ~ log(Body_mass_female_mean))
+bootobject
+```
+
+```{r}
+##Miguel: I have the feeling that you are still trying to solve the problem, that is ok, I also used the "boot" function and spent much time understanding and applying it.
+
+##Miguel: Before applying the function, you need to define the variable you want to bootstrap or the "statistic". In our case, we have been asked to sample the coeficients from the linal model: β0 (intercept) and β1 (slope), so you need to define them as ther "statistic" term in the boot function. You have written "k1" but have not set anything before, and that is why your function is not running. The rest of the parameters seem to be nice.
+
+##Miguel: You might also want to set the seed with the "set.seed()" function as we did before in the other homework.
+
+##Miguel: You can check my code to get a better sense of how to do it or the "R in action" pdf book version that is available in tha class website (it helpped me a lot for this homework).
+```
+
+
+
+https://www.statmethods.net/advstats/bootstrapping.html
+
+
+```{r, eval=F}
+##Miguel: You can use "{r, eval=F}" at the begining of your chunk (as I did with this one) and place your links in the new chunk. In this case, these chunks will not be run if you try to run the whole code.
+```
+
+
+
+```{r}
+plot(bootobject, index = 1)
+plot(bootobject, index = 2)
+```
+
+```{r}
+##Miguel: I see you are trying to plot the bootstrapping. It gives an error because the object "bootobject" is not found, but when you solve how to apply the "boot" function you will have it.
+
+##Miguel: The "index" is used to plot the different elements when you have more than one (in this case you will have 2, the interecept and the slope, so I see why you wrote it like that), but first you need to have these elements set by defining your variables. Once you have them, plotting is a good tool to see if the distribution from your bootstrapped variables are normal (histogram's shape and Q-Q plot), so well done trying to set the plots for doing so! I did it the same way, so if you have any doubt you can check my code.
+```
+
+
+```{r}
+##Miguel: You have missed the final part of the homework (I guess because you have not dominate the bootstrapping yet). I can give you some tips for the next part!
+
+#1. For doing the Confidence intervals take a look the function "boot.ci" that is simple and effective (remember to check normality before with your plots if you want to calculate the "norm" quantiles!)
+
+#2. Once you finish your bootstrapping, you will get the standard error from the distribution of your variables. You just need to make a comparision of these values with the ones you obtained from the "lm()" function. Same with IC.
+```
+
+```{r}
+##Overall commentary: It see that you have tried to do the homework using a new function instead of trying to apply the "for loops" like we did in previous modules and I think the effort is good (and worthy). You just need to dedicate a bit more time to the task to fully understood the missing step when using the "boot" function and after that you will be almost finished! If you have problems you can check my code or the book pdf I told you before, I think that might help you.
+```
+
