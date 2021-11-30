@@ -82,4 +82,4 @@ boot.ci(bootobject, conf = 0.95, index = 1, type = "norm")
 boot.ci(bootobject, conf = 0.95, index = 2, type = "norm")
 ```
 
-
+*call on your boot object to look t the stats the questions ask about*
